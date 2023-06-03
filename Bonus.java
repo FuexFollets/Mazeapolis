@@ -30,7 +30,6 @@ public class Bonus extends Entity {
 			this.isMysteryBonus = false;
 		}
 
-
 		if (bonusTypeDecider < 4) {
 			this.bonusType = BonusType.Add;
 			this.bonusValue = MazeGenerator.discreteRandInclusive(1, 9);
