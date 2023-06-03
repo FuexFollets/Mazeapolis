@@ -502,7 +502,6 @@ public class Game {
 		}
 
 		String renderString = "Move History:\n";
-		System.out.println(lastFewMoves.length);
 		
 		for (final GameMove renderedMove : lastFewMoves) {
 			renderString += renderedMove.toStringDescriptive(true);
