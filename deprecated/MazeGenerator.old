@@ -1,0 +1,237 @@
+import java.util.ArrayList;
+
+public final class MazeGenerator {
+	public enum Cell { Block, Blank };
+	private enum SidesToGenerate { Both, Left, Right };
+
+	Cell[][] maze;
+
+	final int rows;
+	final int columns;
+
+	public MazeGenerator(final int rows, final int columns) {
+		this.rows = rows;
+		this.columns = columns;
+		
+		this.maze = new Cell[rows][columns];
+
+		for (int rowIndex = 0; rowIndex < this.rows; rowIndex++) {
+			for (int columnIndex = 0; columnIndex < this.columns; columnIndex++) {
+				maze[rowIndex][columnIndex] = Cell.Blank;
+			}
+		}
+	}
+
+	public Cell[][] getMaze() {
+		return this.maze;
+	}
+
+	public Cell at(final Cordinate position) {
+		return this.maze[position.getY()][position.getX()];
+	}
+
+	public boolean inBounds(final Cordinate cordinate) {
+		final int x = cordinate.getX();
+		final int y = cordinate.getY();
+
+		return (
+			0 <= x && x < columns &&
+			0 <= y && y < rows
+		);
+	}
+
+	public boolean leadsToOpening(final Cordinate startingCordinate, final Cordinate.Direction direction)  {
+		Cordinate checkedCordinate = startingCordinate;
+		
+		checkedCordinate = checkedCordinate.inDirection(direction, 1);
+
+		return false;
+	}
+
+	public Cordinate beforeNextWallOrBorder(final Cordinate startingCordinate, final Cordinate.Direction direction) {
+		Cordinate checkedCordinate = startingCordinate.inDirection(direction, 1);
+
+		while (this.inBounds(checkedCordinate) && this.at(checkedCordinate) != Cell.Block) {
+			checkedCordinate = checkedCordinate.inDirection(direction, 1);
+		}
+
+		return checkedCordinate.inDirection(direction.opposite(), 1);
+	}
+
+	public void generate() {
+		final Cordinate divisionPointStart = new Cordinate(0, 15);
+		final Cordinate divisionPointEnd = new Cordinate(30, 15);
+		
+		makeMazeLine(divisionPointStart, divisionPointEnd);
+		
+		divide(
+			divisionPointStart,
+			divisionPointEnd,
+			0,
+			SidesToGenerate.Both
+		);
+	}
+
+	// Divides along this line, recursively (absolue nightmare)
+	public void divide(final Cordinate divisionLineStart, final Cordinate divisionLineEnd, final int depth,
+					  final SidesToGenerate sideToGenerate) {
+		final int divisionLineLength = divisionLineStart.distanceFrom(divisionLineEnd);
+		
+		System.out.println("Divide called with "  + divisionLineStart + " and " + divisionLineEnd + " with length " + divisionLineLength);
+		
+		if (depth >= 1) { return; }
+
+		if (divisionLineLength <= 2) {
+			return;
+		}
+		
+		final Cordinate hole = generateHoleInLine(divisionLineStart, divisionLineEnd);
+		final Cordinate.Direction divisionLineDirection = divisionLineStart.directionTowards(divisionLineEnd);
+
+		Cordinate[][] wallStartSelection = possibleWallStarts(divisionLineStart, divisionLineEnd, hole);
+		Cordinate[] wallStarts = new Cordinate[]{
+			randChoose(wallStartSelection[0]),
+			randChoose(wallStartSelection[1])
+		};
+
+		class WallStartToEndPair {
+			public final Cordinate start;
+			public final Cordinate end;
+
+			public WallStartToEndPair(final Cordinate start, final Cordinate end) {
+				this.start = start;
+				this.end = end;
+			}
+		}
+
+		ArrayList<WallStartToEndPair> wallsToDivide = new ArrayList<WallStartToEndPair>();
+
+		for (final Cordinate wallStart : wallStarts) {
+			if (wallStart != null) {
+				System.out.println("Dividing at: " + wallStart);
+
+				if (sideToGenerate == SidesToGenerate.Both || sideToGenerate == SidesToGenerate.Right) {
+					final Cordinate rightSideEnd = this.beforeNextWallOrBorder(wallStart, divisionLineDirection.rotateRight());
+					makeMazeLine(wallStart, rightSideEnd);
+					wallsToDivide.add(new WallStartToEndPair(wallStart, rightSideEnd));
+			
+					System.out.println("Right side end: " + rightSideEnd);
+				}
+				
+				if (sideToGenerate == SidesToGenerate.Both || sideToGenerate == SidesToGenerate.Left) {
+					final Cordinate leftSideEnd = this.beforeNextWallOrBorder(wallStart, divisionLineDirection.rotateLeft());
+					makeMazeLine(wallStart, leftSideEnd);
+					wallsToDivide.add(new WallStartToEndPair(wallStart, leftSideEnd));
+					
+					System.out.println("Left side end: " + leftSideEnd);
+				}
+			}
+		}
+
+		boolean generatedBothSidesAlready = false;
+
+		for (final WallStartToEndPair wall : wallsToDivide) {
+			if (!generatedBothSidesAlready) {
+				divide(wall.start, wall.end, depth + 1, SidesToGenerate.Both);
+
+				generatedBothSidesAlready = true;
+			}
+
+			else {
+				divide(wall.start, wall.end, depth + 1, SidesToGenerate.Right);
+			}
+		}
+	}
+	
+	public void makeMazeLine(final Cordinate pointStart, final Cordinate pointEnd) { // Draws a line with a hole in it
+		if (pointStart.equals(pointEnd)) {
+			return;
+		}
+		
+		for (final Cordinate blockCordinate : pointStart.allInBetween(pointEnd, true)) {
+			if (this.inBounds(blockCordinate)) {
+				this.maze[blockCordinate.getY()][blockCordinate.getX()] = Cell.Block;
+			}
+		}
+		
+		final Cordinate autoHole = generateHoleInLine(pointStart, pointEnd);
+			
+		this.maze[autoHole.getY()][autoHole.getX()] = Cell.Blank;
+	}
+
+	public static Cordinate[][] possibleWallStarts(final Cordinate lineStart, final Cordinate lineEnd,
+																	final Cordinate hole) {
+		final int lineLength = lineStart.distanceFrom(lineEnd);
+
+		if (lineLength == -1 || lineLength < 2) {
+			return null;
+		}
+
+		final Cordinate.Direction wallDirection = lineStart.directionTowards(lineEnd);
+
+		final int holeOneMargin = lineStart.distanceFrom(hole);
+		final Cordinate holeOneLeftBound = lineStart.inDirection(wallDirection, 2);
+		final Cordinate holeOneRightBound = hole.inDirection(wallDirection.opposite(), 2);
+
+		final int holeTwoMargin = lineEnd.distanceFrom(hole);
+		final Cordinate holeTwoLeftBound = hole.inDirection(wallDirection, 2);
+		final Cordinate holeTwoRightBound = lineEnd.inDirection(wallDirection.opposite(), 2);
+		
+		Cordinate[][] possibleStarts = new Cordinate[][]{
+			(holeOneMargin <= 2) ? null : holeOneLeftBound.allInBetween(holeOneRightBound, true),
+			(holeOneMargin <= 2) ? null : holeTwoLeftBound.allInBetween(holeTwoRightBound, true)
+		};
+		
+		return possibleStarts;
+	} 
+
+	// Requires both cordinates to be on the same horizontal or vertical axis. Returns null otherwise
+	static Cordinate generateHoleInLine(final Cordinate pointStart, final Cordinate pointEnd) {
+		final int lineLength = pointStart.distanceFrom(pointEnd);
+		
+		if (lineLength == -1 || lineLength == 0) {
+			return null;
+		}
+		
+		final Cordinate.Direction lineDirection = pointStart.directionTowards(pointEnd);
+
+		final int position = lineLength / 2;
+
+		return pointStart.inDirection(lineDirection, position);
+	}
+
+	public static int discreteRandInclusive(final int min, final int max) {
+		final int range = max - min;
+		
+		return (int) (Math.random() * range) + min;
+	}
+
+	public static <E> E randChoose(final E[] collection) {
+		if (collection == null) {
+			return null;
+		}
+		
+		return collection[discreteRandInclusive(0, collection.length - 1)];
+	}
+
+	public String toString() {
+		String gridRepresentation = "";
+
+		for (final MazeGenerator.Cell[] row : this.maze) {
+			for (final MazeGenerator.Cell value : row) {
+				if (value == Cell.Block) {
+					gridRepresentation += "X";
+				}
+
+				else {
+					gridRepresentation += " ";
+				}
+			}
+
+			gridRepresentation += "\n";
+		}
+		
+		return "rows: " + this.rows + "\ncolumns: " + this.columns + "\n" +
+			gridRepresentation;
+	}
+}
