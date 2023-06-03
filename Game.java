@@ -126,7 +126,7 @@ public class Game {
 	Game(final int gridRows, final int gridColumns) {
 		this.isRunning = true;
 		this.turn = PlayerIdentifier.P1;
-		this.moveCount = 1;
+		this.moveCount = 0;
 		this.grid = new Entity[gridRows][gridColumns];
 		this.gridRows = gridRows;
 		this.gridColumns = gridColumns;
@@ -375,6 +375,8 @@ public class Game {
 		}
 
 		this.drawEndpoints();
+		this.moveHistory.add(moveMade);
+		this.moveCount += 1;
 		
 		return true;
 	}
@@ -489,8 +491,26 @@ public class Game {
 		return null;
 	}
 
-	public String renderMoveHistory() {
-		return null;
+	public String renderMoveHistory(final int maxHistoryLength) {
+		final int length = Math.min(maxHistoryLength, this.moveHistory.size());
+		
+		GameMove[] lastFewMoves = new GameMove[length];
+		
+		for (int lastFewMovesIndexer = length - 1; lastFewMovesIndexer >= 0; lastFewMovesIndexer--) {
+			lastFewMoves[lastFewMovesIndexer] = this.moveHistory.get(
+				this.moveHistory.size() - (length - lastFewMovesIndexer));
+		}
+
+		String renderString = "Move History:\n";
+		System.out.println(lastFewMoves.length);
+		
+		for (final GameMove renderedMove : lastFewMoves) {
+			renderString += renderedMove.toStringDescriptive(true);
+			renderString += Color.CEND.getValue();
+			renderString += '\n';
+		}
+		
+		return renderString;
 	}
 
 	@Override
@@ -498,6 +518,7 @@ public class Game {
 		return
 			this.renderScores() + "\n" +
 			this.renderTurn() + "\n" +
-			this.renderString('*', 1);
+			this.renderString('*', 1) +
+			this.renderMoveHistory(4);
 	}
 }
