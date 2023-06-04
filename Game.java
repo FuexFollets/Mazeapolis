@@ -86,12 +86,12 @@ public class Game {
 				((movePlayer == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue();
 
 			return String.format(
-				"%s%d. %s to %s (%c) %s%s",
+				"%s%d. %s to %s (%s) %s%s",
 				colorValue,
 				this.moveNumber,
 				this.moveStart,
 				this.moveEnd,
-				this.moveDirection.getKey(),
+				this.moveDirection.getOrdinal(),
 				((this.moveBonusReceived == null) ? "" : this.moveBonusReceived.toString()),
 				Color.CEND.getValue()
 			);

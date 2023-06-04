@@ -12,7 +12,7 @@ public class Cordinate {
 		 */
 
 		private char key;
-		private char ordinal;
+		private String ordinal;
 
 		private Direction(final char key, final String ordinal) {
 			this.key = key;
