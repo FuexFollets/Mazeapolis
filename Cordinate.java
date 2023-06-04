@@ -1,6 +1,10 @@
 public class Cordinate {
 	public enum Direction {
-		North('w'), East('d'), South('s'), West('a'), None(' ');
+		North('w', "north"),
+		East('d', "east"),
+		South('s', "south"),
+		West('a', "west"),
+		None(' ', "none");
 		/**
 		 *     N
 		 *  W     E
@@ -8,13 +12,19 @@ public class Cordinate {
 		 */
 
 		private char key;
+		private char ordinal;
 
-		private Direction(final char key) {
+		private Direction(final char key, final String ordinal) {
 			this.key = key;
+			this.ordinal = ordinal;
 		}
 
 		public char getKey() {
 			return this.key;
+		}
+
+		public String getOrdinal() {
+			return this.ordinal;
 		}
 
 		public Direction rotateLeft() {
