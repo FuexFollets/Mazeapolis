@@ -1,15 +1,24 @@
 public class Bonus extends Entity {
 	enum BonusType {
-		Add(1), Subtract(2), Multiply(3), Divide(4);
+		Add(1, "+"),
+		Subtract(2, "-"),
+		Multiply(3, "x"), 
+		Divide(4, "/");
 
 		private final int index;
+		private final String symbol;
 
-		private BonusType(final int index) {
+		private BonusType(final int index, final String symbol) {
 			this.index = index;
+			this.symbol = symbol;
 		}
 
 		public int getIndex() {
 			return this.index;
+		}
+
+		public String getSymbol() {
+			return this.symbol;
 		}
 	};
 
@@ -96,5 +105,9 @@ public class Bonus extends Entity {
 
 	public int getBonusValue() {
 		return this.bonusValue;
+	}
+
+	public String toString() {
+		return String.format("%s%d", this.bonusType.getSymbol(), this.bonusValue);
 	}
 }
