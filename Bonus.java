@@ -82,21 +82,10 @@ public class Bonus extends Entity {
 			};
 		}
 
-		if (this.bonusType == BonusType.Add) {
-			return new char[][]{
-				{'+', (char) (this.bonusValue + '0')},
-				{blankSpaceCharValue, blankSpaceCharValue}
-			};
-		}
-		
-		if (this.bonusType == BonusType.Multiply) {
-			return new char[][]{
-				{'x', (char) (this.bonusValue + '0')},
-				{blankSpaceCharValue, blankSpaceCharValue}
-			};
-		}
-		
-		return null;
+		return new char[][]{
+			{this.bonusType.getSymbol().charAt(0), (char) (this.bonusValue + '0')},
+			{blankSpaceCharValue, blankSpaceCharValue}
+		};
 	}
 
 	public BonusType getBonusType() {
