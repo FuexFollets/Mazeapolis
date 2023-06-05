@@ -4,15 +4,36 @@ import java.lang.NumberFormatException;
 
 public final class GameLoop {
 	static final String CLS = "\u001B[2J\u001B[0;0f";
-	Game runningGame;
+	private Game runningGame;
 
 	public GameLoop() {
 		this.runningGame = null;
 	}
 
 	public void greet() {
+		final String greetDialog = 
+			"""
+			Welcome to theGame!
+			
+				> h - help
+				> q - quit
+				> s - start a new game
+			""";
+		
+		System.out.println(greetDialog);
+
+		
 	}
 
+	public static void showHelp() {
+		clearScreen();
+		System.out.println(HelpTexts.helpDialog);
+		
+		final Scanner stdin = new Scanner(System.in);
+		stdin.useDelimeter("");
+
+		stdin.next();
+	}
 	
 	public static void promptQuit(final Scanner stdin) {
 		final String quitDialog = "Are you sure you want to quit? All progress will be lost (Press 'q' again to quit the program or 'Enter' continue)\n> ";
