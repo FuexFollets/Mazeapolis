@@ -12,10 +12,10 @@ public final class GameLoop {
 	public void greet() {
 	}
 
-	public void promptQuit() {
+	
+	public static void promptQuit(final Scanner stdin) {
 		final String quitDialog = "Are you sure you want to quit? All progress will be lost (Press 'q' again to quit the program or 'Enter' continue)\n> ";
 		
-		final Scanner stdin = new Scanner(System.in);
 		stdin.useDelimiter("");
 
 		System.out.print(quitDialog);
@@ -26,9 +26,13 @@ public final class GameLoop {
 			if (nextChar == 'q') {
 				System.out.println("Quitting program");
 				
-				this.exit();
+				exit();
 			}
 		}
+	}
+
+	public static void promptQuit() {
+		promptQuit(new Scanner(System.in));
 	}
 
 	public Cordinate promptSize() {
@@ -38,8 +42,6 @@ public final class GameLoop {
 		final String warningLargeBoard = "Warning: a board size of %d might not render properly\n";
 		
 		Scanner stdin = new Scanner(System.in);
-		
-		// System.out.print(promptDialog);
 
 		boolean isSuccessfulSizeGiven = false;
 		Cordinate successfulSize = null;
@@ -48,6 +50,15 @@ public final class GameLoop {
 			System.out.print(promptDialog);
 
 			final String input1 = stdin.next();
+			
+			if (input1.length() == 1 && input1.charAt(0) == 'q') {
+				promptQuit();
+
+				stdin = new Scanner(System.in);
+				
+				continue;
+			}
+			
 			final String input2 = stdin.next();
 
 			int integerInput1 = -1;
@@ -176,7 +187,7 @@ public final class GameLoop {
 		System.out.print(GameLoop.CLS);
 	}
 
-	public void exit() {
+	public static void exit() {
 		System.exit(0);
 	}
 }
