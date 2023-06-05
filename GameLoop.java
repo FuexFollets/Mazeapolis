@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.lang.NumberFormatException;
 
 public final class GameLoop {
 	static final String CLS = "\u001B[2J\u001B[0;0f";
@@ -30,59 +31,48 @@ public final class GameLoop {
 		}
 	}
 
-	public int promptSize() {
-		final String promptDialog = "Enter an integer board size >10 (Note: board sizes too large may not render properly)\n> ";
+	public Cordinate promptSize() {
+		final String promptDialog = "Enter an integer board size >10 for the rows and columns separated by a space (Note: board sizes too large may not render properly)\n> ";
 		final String errorInvalidType = "Error: %s is an invalid integer\n";
 		final String errorSmallBoard = "Error: %d is too small of a board size\n";
 		final String warningLargeBoard = "Warning: a board size of %d might not render properly\n";
+		
 		Scanner stdin = new Scanner(System.in);
 		
 		// System.out.print(promptDialog);
 
 		boolean isSuccessfulSizeGiven = false;
-		int successfulSize = -1;
+		Cordinate successfulSize = null;
 		
 		while (!isSuccessfulSizeGiven) {
 			System.out.print(promptDialog);
+
+			final String input1 = stdin.next();
+			final String input2 = stdin.next();
+
+			int integerInput1 = -1;
+			int integerInput2 = -1;
+
+			try {
+				integerInput1 = Integer.parseInt(input1);
+				integerInput2 = Integer.parseInt(input2);
+			}
 			
-			final boolean hasInteger = stdin.hasNextInt();
-			
-			if (hasInteger) {
-				final int integerInput = stdin.nextInt();
-
-				if (integerInput > 10) {
-					isSuccessfulSizeGiven = true;
-					successfulSize = integerInput;
-
-					break;
-				}
-
-				else {
-					System.out.printf(errorSmallBoard, integerInput);
-
-					continue;
-				}
+			catch (final NumberFormatException error) {
+				System.out.printf(errorInvalidType, input1 + " or " + input2);
+				
+				continue;
 			}
 
-			if (!hasInteger) {
-				final String next = stdin.next();
-
-				if (next.length() == 1 && next.charAt(0) == 'q') {
-					stdin = null;
-					this.promptQuit();
-					stdin = new Scanner(System.in);
-					
-					continue;
-				}
-
-				System.out.printf(errorInvalidType, next);
+			if (integerInput1 <= 10 || integerInput2 <= 10) {
+				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >10.\n> ", integerInput1, integerInput2);
+				continue;
 			}
-		}
 
-		if (successfulSize > 350) {
-			System.out.printf(warningLargeBoard, successfulSize);
+			successfulSize = new Cordinate(integerInput2 / 2 * 2 + 1, integerInput1 / 2 * 2 + 1);
+			isSuccessfulSizeGiven = true;
 		}
-
+			
 		return successfulSize;
 	}
 
@@ -139,14 +129,16 @@ public final class GameLoop {
 	public void startGame() {
 		GameLoop.clearScreen();
 		
-		final int gameSize = (this.promptSize() / 2) * 2;
+		final Cordinate gameSize = this.promptSize();
 		
-		this.runningGame = new Game(gameSize, gameSize);
+		this.runningGame = new Game(gameSize.getY(), gameSize.getX());
 		this.runningGame.initialize();
 		
 		clearScreen();
 
 		while (runningGame.getIsRunning()) {
+			clearScreen();
+			
 			System.out.println(this.runningGame);
 
 			final char userMoveChar = this.moveDirection();
@@ -164,9 +156,11 @@ public final class GameLoop {
 				
 				(new Scanner(System.in)).nextLine();
 			}
-
-			clearScreen();
 		}
+
+		clearScreen();
+		
+		System.out.println(this.runningGame);
 
 		final Game.PlayerIdentifier winner = this.runningGame.getWinner();
 
