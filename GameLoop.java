@@ -89,7 +89,7 @@ public final class GameLoop {
 	}
 
 	public char moveDirection(final ArrayList<Character> viableMoveKeys) {
-		final String moveDialog = "Enter your move\n\tw - North\n\ta - West\n\ts - South\n\td - East\n\tx - Waste\n> ";
+		final String moveDialog = "Enter your move\n\t> w - North\n\t> a - West\n\t> s - South\n\t> d - East\n\t> x - Waste\n> ";
 		
 		System.out.print(moveDialog);
 		
