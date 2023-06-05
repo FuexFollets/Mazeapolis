@@ -379,8 +379,15 @@ public class Game {
 		if (moveMade == null) {
 			return false;
 		}
+
+		final ArrayList<GameMove> allViableMoves = this.viableMoves();
+
+		if (allViableMoves.size() == 0) { // If the current player does not have any moves, the opponent wins
+			this.isRunning = false;
+			this.winner = this.turn.opposite();
+		}
 		
-		final boolean isViableMove = this.viableMoves().contains(moveMade);
+		final boolean isViableMove = allViableMoves.contains(moveMade);
 		
 		if (!isViableMove) {
 			return false;
