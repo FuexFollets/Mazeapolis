@@ -11,6 +11,8 @@ public final class GameLoop {
 	}
 
 	public void greet() {
+		clearScreen();
+		
 		final String greetDialog = 
 			"""
 			Welcome to theGame!
@@ -18,16 +20,56 @@ public final class GameLoop {
 				> h - help
 				> q - quit
 				> s - start a new game
+			
 			""";
 		
-		System.out.println(greetDialog);
+		System.out.print(greetDialog);
+		System.out.print("> ");
 
-		
+		final Scanner stdin = new Scanner(System.in);
+
+		boolean gameStarted = false;
+
+		while (!gameStarted) {
+			final String input = stdin.next();
+			
+			if (input.length() != 1) {
+				System.out.printf("Error, %s is not a valid input\n> ", input);
+				
+				continue;
+			}
+
+			if (input.charAt(0) == 'q') {
+				promptQuit();
+				clearScreen();
+				System.out.print(greetDialog);
+				System.out.print("> ");
+				continue;
+			}
+			
+			if (input.charAt(0) == 'h') {
+				clearScreen();
+				showHelp();
+				clearScreen();
+				System.out.print(greetDialog);
+				System.out.print("> ");
+				continue;
+			}
+			
+			if (input.charAt(0) == 's') {
+				clearScreen();
+				this.startGame();
+				clearScreen();
+				System.out.print(greetDialog);
+				System.out.print("> ");
+				continue;
+			}
+		}
 	}
 
 	public static void showHelp() {
 		clearScreen();
-		System.out.println(HelpTexts.helpDialog);
+		System.out.print(HelpTexts.helpDialog);
 		
 		final Scanner stdin = new Scanner(System.in);
 		stdin.useDelimiter("");
@@ -74,9 +116,10 @@ public final class GameLoop {
 			final String input1 = stdin.next();
 			
 			if (input1.length() == 1 && input1.charAt(0) == 'q') {
+				clearScreen();
 				promptQuit();
 
-				stdin = new Scanner(System.in);
+				clearScreen();
 				
 				continue;
 			}
@@ -85,7 +128,7 @@ public final class GameLoop {
 				clearScreen();
 				showHelp();
 
-				stdin = new Scanner(System.in);
+				clearScreen();
 				
 				continue;
 			}
@@ -149,21 +192,13 @@ public final class GameLoop {
 		
 		return ' ';
 	}
-
-	public void displayMenu() {
-		GameLoop.clearScreen();
-	}
-
-	public void displayHelpMenu() {
-		GameLoop.clearScreen();
-	}
 	
 	public void startGame() {
 		GameLoop.clearScreen();
 		
 		final Cordinate gameSize = this.promptSize();
 		
-		this.runningGame = new Game(gameSize.getY(), gameSize.getX());
+		this.runningGame = new Game(gameSize.getY() - 10, gameSize.getX() - 10);
 		this.runningGame.initialize();
 		
 		clearScreen();
@@ -208,6 +243,11 @@ public final class GameLoop {
 						  Color.CEND.getValue());
 
 		this.runningGame = null;
+
+		System.out.println("Press Enter to continue...");
+
+		final Scanner enterWait = new Scanner(System.in);
+		enterWait.nextLine();
 	}
 
 	public static void clearScreen() {
