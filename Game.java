@@ -127,9 +127,9 @@ public class Game {
 		this.isRunning = true;
 		this.turn = PlayerIdentifier.P1;
 		this.moveCount = 0;
-		this.grid = new Entity[gridRows][gridColumns];
-		this.gridRows = gridRows;
-		this.gridColumns = gridColumns;
+		this.gridRows = gridRows / 2 * 2 + 1; // Must be odd
+		this.gridColumns = gridColumns / 2 * 2 + 1; // Must be odd
+		this.grid = new Entity[this.gridRows][this.gridColumns];
 		this.player1 = new Player(PlayerIdentifier.P1, new Cordinate(0, 0));
 		this.player2 = new Player(PlayerIdentifier.P2, new Cordinate(this.gridColumns - 1, this.gridRows - 1));
 		this.moveHistory = new ArrayList<GameMove>();
@@ -149,10 +149,11 @@ public class Game {
 		gameMaze.generate();
 		
 		MazeGenerator.Cell[][] mazeCellGrid = gameMaze.getMaze();
-
-		for (int rowIndex = 0; rowIndex < this.gridRows; rowIndex++) {
-			for (int columnIndex = 0; columnIndex < this.gridColumns; columnIndex++) {
-				this.grid[rowIndex][columnIndex] = (mazeCellGrid[rowIndex][columnIndex] == MazeGenerator.Cell.Block) ? new Wall() : null;
+		
+		for (int rowIndex = 0; rowIndex < this.grid.length; rowIndex++) {
+			for (int columnIndex = 0; columnIndex < this.grid[0].length; columnIndex++) {
+				this.grid[rowIndex][columnIndex] = (
+					(mazeCellGrid[rowIndex][columnIndex] == MazeGenerator.Cell.Block) ? new Wall() : null);
 			}
 		}
 	}
@@ -171,7 +172,7 @@ public class Game {
 	
 	public void addEndpoints() {
 		this.player1Endpoint = new Endpoint(PlayerIdentifier.P1, new Cordinate(0, 0));
-		this.player2Endpoint = new Endpoint(PlayerIdentifier.P2, new Cordinate(this.gridRows - 1, this.gridColumns - 1));
+		this.player2Endpoint = new Endpoint(PlayerIdentifier.P2, new Cordinate(this.gridColumns - 1, this.gridRows - 1));
 
 		this.drawEndpoints();
 	}

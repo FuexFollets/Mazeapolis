@@ -8,7 +8,7 @@ public final class MazeGenerator {
 	final int rows;
 	final int columns;
 
-	public MazeGenerator(final int columns, final int rows) {
+	public MazeGenerator(final int rows, final int columns) {
 		this.rows = rows;
 		this.columns = columns;
 		
