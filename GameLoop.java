@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.lang.NumberFormatException;
 
@@ -87,8 +88,8 @@ public final class GameLoop {
 		return successfulSize;
 	}
 
-	public char moveDirection() {
-		final String moveDialog = "Enter the direction that you want to go towards\n\t(please enter 'w' to move north, 'a' to move west, 'd' to move east, and 's' to move south)\n> ";
+	public char moveDirection(final ArrayList<Character> viableMoveKeys) {
+		final String moveDialog = "Enter your move\n\tw - North\n\ta - West\n\ts - South\n\td - East\n\tx - Waste\n> ";
 		
 		System.out.print(moveDialog);
 		
@@ -98,7 +99,7 @@ public final class GameLoop {
 			String nextInput = x.next();
 
 			if (nextInput.length() != 1) {
-				System.out.printf("%s is not a valid move. Try again\n> ", nextInput);
+				System.out.printf("\"%s\" is not a valid move. Try again\n> ", nextInput);
 				
 				continue;
 			}
@@ -108,22 +109,12 @@ public final class GameLoop {
 			if (charAt == 'q') {
 				return 'q';
 			}
-			if (charAt == 'w') {
-				return 'w';
-			}
-			else if (charAt == 'a') {
-				return 'a';
-			}
-			else if (charAt == 's') {
-				return 's';
-			}
-			else if (charAt == 'd') {
-				return 'd';
-			}
 
-			else {
-				System.out.printf("%c is not a valid move. Try again\n> ", charAt);
+			if (viableMoveKeys.contains(charAt)) {
+				return charAt;
 			}
+			
+			System.out.printf("%c is not a valid move. Try again\n> ", charAt);
 		}
 		
 		return ' ';
@@ -152,7 +143,7 @@ public final class GameLoop {
 			
 			System.out.println(this.runningGame);
 
-			final char userMoveChar = this.moveDirection();
+			final char userMoveChar = this.moveDirection(this.runningGame.viableMoveKeys());
 
 			if (userMoveChar == 'q') {
 				promptQuit();
