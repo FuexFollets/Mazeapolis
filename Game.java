@@ -38,6 +38,7 @@ public class Game {
 	public class GameMove {
 		private final PlayerIdentifier movePlayer; 
 		private final int moveNumber;
+		private final boolean isWasteMove;
 		private final Cordinate moveStart;
 		private final Cordinate moveEnd;
 		private final Bonus moveBonusReceived;
@@ -51,14 +52,32 @@ public class Game {
 						final Bonus moveBonusReceived) {
 			this.movePlayer = movePlayer;
 			this.moveNumber = moveNumber;
+			this.isWasteMove = false;
 			this.moveStart = moveStart;
 			this.moveEnd = moveEnd;
 			this.moveBonusReceived = moveBonusReceived;
 			this.moveDirection = moveDirection;
 		}
+		
+		public GameMove(final PlayerIdentifier movePlayer,
+						final int moveNumber,
+						final boolean isWasteMove) {
+			this.movePlayer = movePlayer;
+			this.moveNumber = moveNumber;
+			this.isWasteMove = isWasteMove;
+			
+			this.moveStart = null;
+			this.moveEnd = null;
+			this.moveBonusReceived = null;
+			this.moveDirection = null;
+		}
 
 		public PlayerIdentifier getPlayerIdentifier() {
 			return this.movePlayer;
+		}
+
+		public boolean getIsWasteMove() {
+			return this.isWasteMove;
 		}
 
 		public Cordinate getStart() {
@@ -85,6 +104,13 @@ public class Game {
 			final String colorValue = (!colored) ? "" :
 				((movePlayer == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue();
 
+			if (this.isWasteMove) {
+				return String.format(
+					"%s%d. (waste)",
+					colorValue,
+					this.getMoveNumber());
+			}
+
 			return String.format(
 				"%s%d. %s to %s (%s) %s%s",
 				colorValue,
@@ -105,6 +131,16 @@ public class Game {
 
 			final GameMove comparedMove = (GameMove) compared;
 
+			if (comparedMove.getIsWasteMove() && this.isWasteMove) {
+				return
+					this.getMoveNumber() == comparedMove.getMoveNumber() &&
+					this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier();
+			}
+
+			if (comparedMove.getIsWasteMove() != this.isWasteMove) {
+				return false;
+			}
+
 			return 
 				this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier() &&
 				this.getMoveNumber() == comparedMove.getMoveNumber() &&
@@ -115,6 +151,10 @@ public class Game {
 
 		@Override
 		public String toString() {
+			if (this.isWasteMove) {
+				return "waste";
+			}
+			
 			return 
 				this.getMoveDirection().getKey() +
 				((this.moveBonusReceived == null) ? "" : (": " + this.moveBonusReceived.toString()));
