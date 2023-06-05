@@ -427,13 +427,10 @@ public class Game {
 		}
 
 		if (!this.player1Finished && !this.player2Finished) {
-			this.turn = ((this.turn == PlayerIdentifier.P1) ?
-						 PlayerIdentifier.P2 : PlayerIdentifier.P1);
+			this.turn = this.turn.opposite();
 		}
 
 		if (this.player1Finished && !this.player2Finished) {
-			// this.removeBonuses();
-			
 			this.turn = PlayerIdentifier.P2;
 			this.player2.setPoints(this.player2.getPoints() - 1);
 
@@ -441,16 +438,9 @@ public class Game {
 				this.isRunning = false;
 				this.winner = PlayerIdentifier.P1;
 			}
-			
-			if (this.player1.getPoints() < this.player2.getPoints()) {
-				this.isRunning = false;
-				this.winner = PlayerIdentifier.P2;
-			}
 		}
 		
 		if (this.player2Finished && !this.player1Finished) {
-			// this.removeBonuses();
-			
 			this.turn = PlayerIdentifier.P1;
 			this.player1.setPoints(this.player1.getPoints() - 1);
 			
@@ -461,6 +451,18 @@ public class Game {
 		}
 
 		if (this.player1Finished && this.player2Finished) {
+			if (this.player1.getPoints() > this.player2.getPoints()) {
+				this.winner = PlayerIdentifier.P1;
+			}
+			
+			else if (this.player1.getPoints() < this.player2.getPoints()) {
+				this.winner = PlayerIdentifier.P2;
+			}
+
+			else {
+				this.winner = PlayerIdentifier.None;
+			}
+			
 			this.isRunning = false;
 		}
 
