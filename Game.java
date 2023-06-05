@@ -14,6 +14,17 @@ public class Game {
 		public String getPlayerName() {
 			return this.playerName;
 		}
+
+		public PlayerIdentifier opposite() {
+			switch (this) {
+				case P1: return P2;
+				case P2: return P1;
+				case Both: return None;
+				case None: return Both;
+			}
+
+			return None;
+		}
 	};
 
 	private final Player player1;
@@ -98,6 +109,14 @@ public class Game {
 
 		public int getMoveNumber() {
 			return this.moveNumber;
+		}
+
+		public char getKey() {
+			if (!this.isWasteMove && this.moveDirection != null) {
+				return this.moveDirection.getKey();
+			}
+
+			return 'x'; // Waste move
 		}
 
 		public String toStringDescriptive(final boolean colored) {
@@ -301,6 +320,10 @@ public class Game {
 		final Cordinate playerStartingPosition = playerMoving.getPosition();
 
 		final ArrayList<GameMove> checkedViableMoves = new ArrayList<GameMove>();
+
+		if (playerMoving.getPoints() > 0) {
+			checkedViableMoves.add(new GameMove(this.turn, this.moveCount + 1, true)); // Waste move
+		}
 		
 		for (final Cordinate.Direction direction : Cordinate.Direction.values()) { // Check all directions
 			final Cordinate newPosition = playerStartingPosition.inDirection(direction, 1);
@@ -334,7 +357,7 @@ public class Game {
 		ArrayList<Character> keys = new ArrayList<Character>();
 		
 		for (final GameMove viableMove : this.viableMoves()) {
-			keys.add(viableMove.getMoveDirection().getKey());
+			keys.add(viableMove.getKey());
 		}
 
 		return keys;
@@ -344,7 +367,7 @@ public class Game {
 		final ArrayList<GameMove> possibleMoves = this.viableMoves();
 
 		for (final GameMove maybeMove : possibleMoves) {
-			if (maybeMove.getMoveDirection().getKey() == moveCode) {
+			if (maybeMove.getKey() == moveCode) {
 				return this.makeMove(maybeMove);
 			}
 		}
@@ -357,16 +380,25 @@ public class Game {
 			return false;
 		}
 		
-		final Cordinate startingSquare = moveMade.getStart();
-		final Cordinate endSquare = moveMade.getEnd();
-		final Entity atEndSquare = this.at(endSquare);
 		final boolean isViableMove = this.viableMoves().contains(moveMade);
 		
 		if (!isViableMove) {
 			return false;
 		}
-
+		
 		final Player playerMoved = (this.turn == PlayerIdentifier.P1) ? player1 : player2;
+
+		if (moveMade.getIsWasteMove()) {
+			this.turn = this.turn.opposite();
+			playerMoved.setPoints(playerMoved.getPoints() - 1);
+			this.moveHistory.add(moveMade);
+			
+			return true;
+		}
+		
+		final Cordinate startingSquare = moveMade.getStart();
+		final Cordinate endSquare = moveMade.getEnd();
+		final Entity atEndSquare = this.at(endSquare);
 		
 		if (atEndSquare instanceof Bonus) {
 			playerMoved.applyBonus((Bonus) atEndSquare);
