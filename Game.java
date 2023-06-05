@@ -289,8 +289,8 @@ public class Game {
 		return checkedViableMoves;
 	}
 
-	public ArrayList<Char> viableMoveKeys() {
-		ArrayList<Char> keys = new ArrayList<Char>();
+	public ArrayList<Character> viableMoveKeys() {
+		ArrayList<Character> keys = new ArrayList<Character>();
 		
 		for (final GameMove viableMove : this.viableMoves()) {
 			keys.add(viableMove.getMoveDirection().getKey());
