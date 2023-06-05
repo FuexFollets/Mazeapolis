@@ -29,6 +29,6 @@ final class HelpTexts {
 
 	Bonuses can either add, subtract, multiply, or divide your points. Only mystery bonuses which are denoted by 4 question marks can divide or subtract from your points. Point additions are denoted with '+x' where 'x' is a random value between 1 and 9 inclusive. Point multiplications are denoted with 'xV' where 'V' is a random value between 2 and 3 inclusive.
 
-	Press any Enter to continue...
+	Press the Enter key to continue...
 	""";
 }
