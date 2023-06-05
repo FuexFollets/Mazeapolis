@@ -30,7 +30,7 @@ public final class GameLoop {
 		System.out.println(HelpTexts.helpDialog);
 		
 		final Scanner stdin = new Scanner(System.in);
-		stdin.useDelimeter("");
+		stdin.useDelimiter("");
 
 		stdin.next();
 	}
@@ -75,6 +75,15 @@ public final class GameLoop {
 			
 			if (input1.length() == 1 && input1.charAt(0) == 'q') {
 				promptQuit();
+
+				stdin = new Scanner(System.in);
+				
+				continue;
+			}
+			
+			if (input1.length() == 1 && input1.charAt(0) == 'h') {
+				clearScreen();
+				showHelp();
 
 				stdin = new Scanner(System.in);
 				
@@ -127,8 +136,8 @@ public final class GameLoop {
 
 			char charAt = nextInput.charAt(0);
 
-			if (charAt == 'q') {
-				return 'q';
+			if (charAt == 'q' || charAt == 'h') {
+				return charAt;
 			}
 
 			if (viableMoveKeys.contains(charAt)) {
@@ -168,6 +177,12 @@ public final class GameLoop {
 
 			if (userMoveChar == 'q') {
 				promptQuit();
+				clearScreen();
+				continue;
+			}
+			
+			if (userMoveChar == 'h') {
+				showHelp();
 				clearScreen();
 				continue;
 			}
