@@ -5,4 +5,4 @@ run:
 	java -classpath .:target/dependency/* Main
 
 build:
-	javac -classpath .:target/dependency/* -d . $(find . -type f -name '*.java')
+	javac -classpath .:target/dependency/* -d . $(wildcard *.java)
