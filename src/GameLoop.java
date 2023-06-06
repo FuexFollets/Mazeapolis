@@ -14,7 +14,7 @@ public final class GameLoop {
 		clearScreen();
 
 		final String greetDialog = """
-				Welcome to theGame!
+				Welcome to MazeApolis!
 
 					> h - help
 					> q - quit
@@ -22,6 +22,7 @@ public final class GameLoop {
 
 				""";
 
+		System.out.println(HelpTexts.asciiArt);
 		System.out.print(greetDialog);
 		System.out.print("> ");
 
@@ -42,6 +43,7 @@ public final class GameLoop {
 				clearScreen();
 				promptQuit();
 				clearScreen();
+				System.out.println(HelpTexts.asciiArt);
 				System.out.print(greetDialog);
 				System.out.print("> ");
 				continue;
@@ -51,6 +53,7 @@ public final class GameLoop {
 				clearScreen();
 				showHelp();
 				clearScreen();
+				System.out.println(HelpTexts.asciiArt);
 				System.out.print(greetDialog);
 				System.out.print("> ");
 				continue;
@@ -60,6 +63,7 @@ public final class GameLoop {
 				clearScreen();
 				this.startGame();
 				clearScreen();
+				System.out.println(HelpTexts.asciiArt);
 				System.out.print(greetDialog);
 				System.out.print("> ");
 				continue;
