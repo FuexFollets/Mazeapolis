@@ -155,8 +155,8 @@ public final class GameLoop {
 			}
 
 			if (integerInput1 <= minBoardSize || integerInput2 <= minBoardSize) {
-				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >10.\n> ",
-						integerInput1, integerInput2);
+				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >%d.\n> ",
+						integerInput1, integerInput2, minBoardSize);
 				continue;
 			}
 
