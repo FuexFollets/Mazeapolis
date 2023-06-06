@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class Bonus extends Entity {
 	enum BonusType {
 		Add(1, "+"),
