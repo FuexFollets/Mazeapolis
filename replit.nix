@@ -1,6 +1,7 @@
 { pkgs }: {
     deps = [
-		pkgs.scc
+		pkgs.gh
+  pkgs.scc
   pkgs.nodePackages.prettier
         pkgs.neovim
         pkgs.fish
