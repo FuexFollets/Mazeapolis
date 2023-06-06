@@ -1,5 +1,5 @@
 public enum Color {
-	NONE("\33[0m"),
+	NONE(""),
 
 	CEND("\33[0m"),
 	CBOLD("\33[1m"),
