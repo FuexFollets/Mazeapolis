@@ -5,4 +5,4 @@ run:
 	java -classpath .:target/dependency/* Main
 
 build:
-	javac -classpath .:target/dependency/* -d . $(wildcard *.java)
+	javac -classpath .:target/dependency/* -d . $(wildcard src/*.java)
