@@ -102,8 +102,6 @@ public final class MazeGenerator {
 			}
 		}
 
-		// final Cordinate autoHole = generateHoleInLine(pointStart, pointEnd);
-
 		if (hole != null) {
 			this.maze[hole.getY()][hole.getX()] = Cell.Blank;
 		}
@@ -141,12 +139,6 @@ public final class MazeGenerator {
 		}
 
 		final Cordinate.Direction lineDirection = pointStart.directionTowards(pointEnd);
-
-		/*
-		 * if (lineLength <= 3) {
-		 * return pointStart.inDirection(lineDirection, ));
-		 * }
-		 */
 
 		final int position = discreteRandInclusive(0, lineLength / 2) * 2 + 1; // Must be odd
 		final Cordinate generatedHole = pointStart.inDirection(lineDirection, position);
