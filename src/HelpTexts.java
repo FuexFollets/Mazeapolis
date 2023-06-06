@@ -1,4 +1,14 @@
 final class HelpTexts {
+	public static final String asciiArt = """
+ __  __                                    _ _     
+ |  \\/  |                 /\\               | (_)    
+ | \\  / | __ _ _______   /  \\   _ __   ___ | |_ ___ 
+ | |\\/| |/ _` |_  / _ \\ / /\\ \\ | '_ \\ / _ \\| | / __|
+ | |  | | (_| |/ /  __// ____ \\| |_) | (_) | | \\__ \\
+ |_|  |_|\\__,_/___\\___/_/    \\_\\ .__/ \\___/|_|_|___/
+                               | |                  
+                               |_|                  
+	""";
 	public static final String helpDialog = """
 			How to play:
 			(Note: To prompt an exit at any point in the program, input the letter 'q' in both the program and exit prompt. Additionally, this help dialog can be shown by pressing the 'h' key)
