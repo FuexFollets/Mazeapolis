@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Game {
-	public static final String BLANK_SPACE_CHAR = ".";
+	public static final String BLANK_SPACE_CHAR = " ";
 
 	public enum PlayerIdentifier {
 		P1("P1"), P2("P2"), Both("Both"), None("None");
@@ -476,8 +476,6 @@ public class Game {
 	public String[] renderLines() {
 		final int entitySize = Entity.DIMENSIONS;
 		final String colorReset = Color.CEND.getValue();
-
-		final String blankSpacesChar = ".";
 
 		// *3 accounts for colors and oclor resets
 
