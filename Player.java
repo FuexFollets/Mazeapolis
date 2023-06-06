@@ -56,14 +56,14 @@ public class Player extends Entity {
 		if (this.player == Game.PlayerIdentifier.P1) {
 			return new Color[][] {
 					{ Color.CRED, Color.CRED },
-					{ Color.NONE, Color.NONE }
+					{ Color.CRED, Color.CRED }
 			};
 		}
 
 		if (this.player == Game.PlayerIdentifier.P2) {
 			return new Color[][] {
 					{ Color.CBLUE, Color.CBLUE },
-					{ Color.NONE, Color.NONE }
+					{ Color.CBLUE, Color.CBLUE }
 			};
 		}
 
@@ -72,18 +72,19 @@ public class Player extends Entity {
 
 	public char[][] renderChars() {
 		final char blankSpaceChar = Game.BLANK_SPACE_CHAR.charAt(0);
+		final char legs = '^';
 
 		if (this.player == Game.PlayerIdentifier.P1) {
 			return new char[][] {
 					{ 'P', '1' },
-					{ blankSpaceChar, blankSpaceChar }
+					{ legs, legs }
 			};
 		}
 
 		if (this.player == Game.PlayerIdentifier.P2) {
 			return new char[][] {
 					{ 'P', '2' },
-					{ blankSpaceChar, blankSpaceChar }
+					{ legs, legs }
 			};
 		}
 
