@@ -40,6 +40,7 @@ public final class GameLoop {
 			}
 
 			if (input.charAt(0) == 'q') {
+				clearScreen();
 				promptQuit();
 				clearScreen();
 				System.out.print(greetDialog);
