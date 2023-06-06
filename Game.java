@@ -491,11 +491,25 @@ public class Game {
 			lines[lineIndex] = "";
 		}
 
+		final GameMove mostRecentMove = 
+			(this.moveHistory.size() != 0) ?
+			this.moveHistory.get(this.moveHistory.size() - 1) : null;
+
 		for (int rowIndex = 0; rowIndex < gridRows; rowIndex++) {
-			for (final Entity renderedEntity : this.grid[rowIndex]) {
+			for (int columnIndex = 0; columnIndex < gridColumns; columnIndex++) {
+				final Cordinate cordinateSquare = new Cordinate(columnIndex, rowIndex);
+				
+				final Entity renderedEntity = this.at(cordinateSquare);
+				final boolean isHighlightedSquare =
+					(mostRecentMove != null && !mostRecentMove.getIsWasteMove()) ?
+						(mostRecentMove.getStart().equals(cordinateSquare) ||
+						mostRecentMove.getEnd().equals(cordinateSquare)) : false;
+
+				final String background = (isHighlightedSquare ? Color.CGREYBG : Color.NONE).getValue();
+					
 				if (renderedEntity == null) {
-					lines[rowIndex * 2] += BLANK_SPACE_CHAR + BLANK_SPACE_CHAR;
-					lines[rowIndex * 2 + 1] += BLANK_SPACE_CHAR + BLANK_SPACE_CHAR;
+					lines[rowIndex * 2] += background + BLANK_SPACE_CHAR + BLANK_SPACE_CHAR + colorReset;
+					lines[rowIndex * 2 + 1] += background + BLANK_SPACE_CHAR + BLANK_SPACE_CHAR + colorReset;
 				}
 
 				else {
@@ -504,15 +518,19 @@ public class Game {
 
 					for (int rowOfEntity = 0; rowOfEntity < 2; rowOfEntity++) {
 						if (colors != null) {
+							lines[rowIndex * 2 + rowOfEntity] += background;
 							lines[rowIndex * 2 + rowOfEntity] += colors[rowOfEntity][0].getValue();
 							lines[rowIndex * 2 + rowOfEntity] += chars[rowOfEntity][0];
 							lines[rowIndex * 2 + rowOfEntity] += colorReset;
+							
+							lines[rowIndex * 2 + rowOfEntity] += background;
 							lines[rowIndex * 2 + rowOfEntity] += colors[rowOfEntity][1].getValue();
 							lines[rowIndex * 2 + rowOfEntity] += chars[rowOfEntity][1];
 							lines[rowIndex * 2 + rowOfEntity] += colorReset;
 						}
 
 						if (chars != null && colors == null) {
+							lines[rowIndex * 2 + rowOfEntity] += background;
 							lines[rowIndex * 2 + rowOfEntity] += chars[rowOfEntity][0];
 							lines[rowIndex * 2 + rowOfEntity] += chars[rowOfEntity][1];
 							lines[rowIndex * 2 + rowOfEntity] += colorReset;
