@@ -12,17 +12,16 @@ public final class GameLoop {
 
 	public void greet() {
 		clearScreen();
-		
-		final String greetDialog = 
-			"""
-			Welcome to theGame!
-			
-				> h - help
-				> q - quit
-				> s - start a new game
-			
-			""";
-		
+
+		final String greetDialog = """
+				Welcome to theGame!
+
+					> h - help
+					> q - quit
+					> s - start a new game
+
+				""";
+
 		System.out.print(greetDialog);
 		System.out.print("> ");
 
@@ -32,10 +31,10 @@ public final class GameLoop {
 
 		while (!gameStarted) {
 			final String input = stdin.next();
-			
+
 			if (input.length() != 1) {
 				System.out.printf("Error, %s is not a valid input\n> ", input);
-				
+
 				continue;
 			}
 
@@ -47,7 +46,7 @@ public final class GameLoop {
 				System.out.print("> ");
 				continue;
 			}
-			
+
 			if (input.charAt(0) == 'h') {
 				clearScreen();
 				showHelp();
@@ -56,7 +55,7 @@ public final class GameLoop {
 				System.out.print("> ");
 				continue;
 			}
-			
+
 			if (input.charAt(0) == 's') {
 				clearScreen();
 				this.startGame();
@@ -71,16 +70,16 @@ public final class GameLoop {
 	public static void showHelp() {
 		clearScreen();
 		System.out.print(HelpTexts.helpDialog);
-		
+
 		final Scanner stdin = new Scanner(System.in);
 		stdin.useDelimiter("");
 
 		stdin.next();
 	}
-	
+
 	public static void promptQuit(final Scanner stdin) {
 		final String quitDialog = "Are you sure you want to quit? All progress will be lost (Press 'q' again to quit the program or 'Enter' continue)\n> ";
-		
+
 		stdin.useDelimiter("");
 
 		System.out.print(quitDialog);
@@ -90,7 +89,7 @@ public final class GameLoop {
 
 			if (nextChar == 'q') {
 				System.out.println("Quitting program");
-				
+
 				exit();
 			}
 		}
@@ -105,35 +104,35 @@ public final class GameLoop {
 		final String errorInvalidType = "Error: %s is an invalid integer\n";
 		final String errorSmallBoard = "Error: %d is too small of a board size\n";
 		final String warningLargeBoard = "Warning: a board size of %d might not render properly\n";
-		
+
 		Scanner stdin = new Scanner(System.in);
 
 		boolean isSuccessfulSizeGiven = false;
 		Cordinate successfulSize = null;
-		
+
 		while (!isSuccessfulSizeGiven) {
 			System.out.print(promptDialog);
 
 			final String input1 = stdin.next();
-			
+
 			if (input1.length() == 1 && input1.charAt(0) == 'q') {
 				clearScreen();
 				promptQuit();
 
 				clearScreen();
-				
+
 				continue;
 			}
-			
+
 			if (input1.length() == 1 && input1.charAt(0) == 'h') {
 				clearScreen();
 				showHelp();
 
 				clearScreen();
-				
+
 				continue;
 			}
-			
+
 			final String input2 = stdin.next();
 
 			int integerInput1 = -1;
@@ -143,38 +142,39 @@ public final class GameLoop {
 				integerInput1 = Integer.parseInt(input1);
 				integerInput2 = Integer.parseInt(input2);
 			}
-			
+
 			catch (final NumberFormatException error) {
 				System.out.printf(errorInvalidType, input1 + " or " + input2);
-				
+
 				continue;
 			}
 
 			if (integerInput1 <= 10 || integerInput2 <= 10) {
-				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >10.\n> ", integerInput1, integerInput2);
+				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >10.\n> ",
+						integerInput1, integerInput2);
 				continue;
 			}
 
 			successfulSize = new Cordinate(integerInput2 / 2 * 2 + 1, integerInput1 / 2 * 2 + 1);
 			isSuccessfulSizeGiven = true;
 		}
-			
+
 		return successfulSize;
 	}
 
 	public char moveDirection(final ArrayList<Character> viableMoveKeys) {
 		final String moveDialog = "Enter your move\n\t> w - North\n\t> a - West\n\t> s - South\n\t> d - East\n\t> x - Waste\n> ";
-		
+
 		System.out.print(moveDialog);
-		
+
 		Scanner x = new Scanner(System.in);
-		
+
 		while (x.hasNext()) {
 			String nextInput = x.next();
 
 			if (nextInput.length() != 1) {
 				System.out.printf("\"%s\" is not a valid move. Try again\n> ", nextInput);
-				
+
 				continue;
 			}
 
@@ -187,26 +187,26 @@ public final class GameLoop {
 			if (viableMoveKeys.contains(charAt)) {
 				return charAt;
 			}
-			
+
 			System.out.printf("%c is not a valid move. Try again\n> ", charAt);
 		}
-		
+
 		return ' ';
 	}
-	
+
 	public void startGame() {
 		GameLoop.clearScreen();
-		
+
 		final Cordinate gameSize = this.promptSize();
-		
+
 		this.runningGame = new Game(gameSize.getY() - 10, gameSize.getX() - 10);
 		this.runningGame.initialize();
-		
+
 		clearScreen();
 
 		while (runningGame.getIsRunning()) {
 			clearScreen();
-			
+
 			System.out.println(this.runningGame);
 
 			final char userMoveChar = this.moveDirection(this.runningGame.viableMoveKeys());
@@ -216,32 +216,32 @@ public final class GameLoop {
 				clearScreen();
 				continue;
 			}
-			
+
 			if (userMoveChar == 'h') {
 				showHelp();
 				clearScreen();
 				continue;
 			}
-			
+
 			final boolean wasValidMove = this.runningGame.makeMove(userMoveChar);
 
 			if (!wasValidMove || userMoveChar == ' ') {
 				System.out.printf("%c was not a valid move. Try again\n> ", userMoveChar);
-				
+
 				(new Scanner(System.in)).nextLine();
 			}
 		}
 
 		clearScreen();
-		
+
 		System.out.println(this.runningGame);
 
 		final Game.PlayerIdentifier winner = this.runningGame.getWinner();
 
-		System.out.printf("Congratulations, %s%s%s is the winner!\n", 
-						  ((winner == Game.PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue(),
-						  winner,
-						  Color.CEND.getValue());
+		System.out.printf("Congratulations, %s%s%s is the winner!\n",
+				((winner == Game.PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue(),
+				winner,
+				Color.CEND.getValue());
 
 		this.runningGame = null;
 

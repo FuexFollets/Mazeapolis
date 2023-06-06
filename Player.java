@@ -30,7 +30,7 @@ public class Player extends Entity {
 	public void setPosition(final Cordinate newPosition) {
 		this.position = newPosition;
 	}
-	
+
 	public void applyBonus(final Bonus appliedBonus) {
 		switch (appliedBonus.getBonusType().getIndex()) {
 			case 1: {
@@ -54,16 +54,16 @@ public class Player extends Entity {
 
 	public Color[][] renderColors() {
 		if (this.player == Game.PlayerIdentifier.P1) {
-			return new Color[][]{
-				{Color.CRED, Color.CRED},
-				{Color.NONE, Color.NONE}
+			return new Color[][] {
+					{ Color.CRED, Color.CRED },
+					{ Color.NONE, Color.NONE }
 			};
 		}
-		
+
 		if (this.player == Game.PlayerIdentifier.P2) {
-			return new Color[][]{
-				{Color.CBLUE, Color.CBLUE},
-				{Color.NONE, Color.NONE}
+			return new Color[][] {
+					{ Color.CBLUE, Color.CBLUE },
+					{ Color.NONE, Color.NONE }
 			};
 		}
 
@@ -72,16 +72,16 @@ public class Player extends Entity {
 
 	public char[][] renderChars() {
 		if (this.player == Game.PlayerIdentifier.P1) {
-			return new char[][]{
-				{'P', '1'},
-				{'.', '.'}
+			return new char[][] {
+					{ 'P', '1' },
+					{ '.', '.' }
 			};
 		}
-		
+
 		if (this.player == Game.PlayerIdentifier.P2) {
-			return new char[][]{
-				{'P', '2'},
-				{'.', '.'}
+			return new char[][] {
+					{ 'P', '2' },
+					{ '.', '.' }
 			};
 		}
 

@@ -2,7 +2,7 @@ public class Bonus extends Entity {
 	enum BonusType {
 		Add(1, "+"),
 		Subtract(2, "-"),
-		Multiply(3, "x"), 
+		Multiply(3, "x"),
 		Divide(4, "/");
 
 		private final int index;
@@ -28,9 +28,9 @@ public class Bonus extends Entity {
 
 	public Bonus() {
 		super();
-		
+
 		final int bonusTypeDecider = MazeGenerator.discreteRandInclusive(0, 10);
-		
+
 		if (MazeGenerator.discreteRandInclusive(0, 3) == 0 || bonusTypeDecider >= 8) {
 			this.isMysteryBonus = true;
 		}
@@ -43,12 +43,12 @@ public class Bonus extends Entity {
 			this.bonusType = BonusType.Add;
 			this.bonusValue = MazeGenerator.discreteRandInclusive(1, 9);
 		}
-		
+
 		else if (bonusTypeDecider < 6) {
 			this.bonusType = BonusType.Multiply;
 			this.bonusValue = MazeGenerator.discreteRandInclusive(2, 3);
 		}
-		
+
 		else if (bonusTypeDecider < 8) {
 			this.bonusType = BonusType.Add;
 			this.bonusValue = MazeGenerator.discreteRandInclusive(2, 3);
@@ -62,9 +62,9 @@ public class Bonus extends Entity {
 
 	public Color[][] renderColors() {
 		if (this.isMysteryBonus) {
-			return new Color[][]{
-				{Color.CRED, Color.CYELLOW},
-				{Color.CGREEN, Color.CBLUE}
+			return new Color[][] {
+					{ Color.CRED, Color.CYELLOW },
+					{ Color.CGREEN, Color.CBLUE }
 			};
 		}
 
@@ -74,17 +74,17 @@ public class Bonus extends Entity {
 	public char[][] renderChars() {
 		// Render the bonus
 		final char blankSpaceCharValue = Game.BLANK_SPACE_CHAR.charAt(0);
-		
+
 		if (this.isMysteryBonus || this.bonusType == BonusType.Divide) {
-			return new char[][]{
-				{'?', '?'},
-				{'?', '?'}
+			return new char[][] {
+					{ '?', '?' },
+					{ '?', '?' }
 			};
 		}
 
-		return new char[][]{
-			{this.bonusType.getSymbol().charAt(0), (char) (this.bonusValue + '0')},
-			{blankSpaceCharValue, blankSpaceCharValue}
+		return new char[][] {
+				{ this.bonusType.getSymbol().charAt(0), (char) (this.bonusValue + '0') },
+				{ blankSpaceCharValue, blankSpaceCharValue }
 		};
 	}
 

@@ -2,9 +2,10 @@ import java.util.ArrayList;
 
 public class Game {
 	public static final String BLANK_SPACE_CHAR = ".";
+
 	public enum PlayerIdentifier {
 		P1("P1"), P2("P2"), Both("Both"), None("None");
-		
+
 		private final String playerName;
 
 		private PlayerIdentifier(final String playerName) {
@@ -17,10 +18,14 @@ public class Game {
 
 		public PlayerIdentifier opposite() {
 			switch (this) {
-				case P1: return P2;
-				case P2: return P1;
-				case Both: return None;
-				case None: return Both;
+				case P1:
+					return P2;
+				case P2:
+					return P1;
+				case Both:
+					return None;
+				case None:
+					return Both;
 			}
 
 			return None;
@@ -38,7 +43,7 @@ public class Game {
 
 	private boolean player1Finished;
 	private boolean player2Finished;
-	
+
 	private boolean isRunning;
 	private PlayerIdentifier turn;
 	private final Entity[][] grid;
@@ -47,7 +52,7 @@ public class Game {
 	private PlayerIdentifier winner;
 
 	public class GameMove {
-		private final PlayerIdentifier movePlayer; 
+		private final PlayerIdentifier movePlayer;
 		private final int moveNumber;
 		private final boolean isWasteMove;
 		private final Cordinate moveStart;
@@ -56,11 +61,11 @@ public class Game {
 		private final Cordinate.Direction moveDirection;
 
 		public GameMove(final PlayerIdentifier movePlayer,
-						final int moveNumber,
-						final Cordinate moveStart,
-						final Cordinate moveEnd,
-						final Cordinate.Direction moveDirection,
-						final Bonus moveBonusReceived) {
+				final int moveNumber,
+				final Cordinate moveStart,
+				final Cordinate moveEnd,
+				final Cordinate.Direction moveDirection,
+				final Bonus moveBonusReceived) {
 			this.movePlayer = movePlayer;
 			this.moveNumber = moveNumber;
 			this.isWasteMove = false;
@@ -69,14 +74,14 @@ public class Game {
 			this.moveBonusReceived = moveBonusReceived;
 			this.moveDirection = moveDirection;
 		}
-		
+
 		public GameMove(final PlayerIdentifier movePlayer,
-						final int moveNumber,
-						final boolean isWasteMove) {
+				final int moveNumber,
+				final boolean isWasteMove) {
 			this.movePlayer = movePlayer;
 			this.moveNumber = moveNumber;
 			this.isWasteMove = isWasteMove;
-			
+
 			this.moveStart = null;
 			this.moveEnd = null;
 			this.moveBonusReceived = null;
@@ -120,26 +125,25 @@ public class Game {
 		}
 
 		public String toStringDescriptive(final boolean colored) {
-			final String colorValue = (!colored) ? "" :
-				((movePlayer == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue();
+			final String colorValue = (!colored) ? ""
+					: ((movePlayer == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue();
 
 			if (this.isWasteMove) {
 				return String.format(
-					"%s%d. (waste)",
-					colorValue,
-					this.getMoveNumber());
+						"%s%d. (waste)",
+						colorValue,
+						this.getMoveNumber());
 			}
 
 			return String.format(
-				"%s%d. %s to %s (%s) %s%s",
-				colorValue,
-				this.moveNumber,
-				this.moveStart,
-				this.moveEnd,
-				this.moveDirection.getOrdinal(),
-				((this.moveBonusReceived == null) ? "" : this.moveBonusReceived.toString()),
-				Color.CEND.getValue()
-			);
+					"%s%d. %s to %s (%s) %s%s",
+					colorValue,
+					this.moveNumber,
+					this.moveStart,
+					this.moveEnd,
+					this.moveDirection.getOrdinal(),
+					((this.moveBonusReceived == null) ? "" : this.moveBonusReceived.toString()),
+					Color.CEND.getValue());
 		}
 
 		@Override
@@ -151,21 +155,19 @@ public class Game {
 			final GameMove comparedMove = (GameMove) compared;
 
 			if (comparedMove.getIsWasteMove() && this.isWasteMove) {
-				return
-					this.getMoveNumber() == comparedMove.getMoveNumber() &&
-					this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier();
+				return this.getMoveNumber() == comparedMove.getMoveNumber() &&
+						this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier();
 			}
 
 			if (comparedMove.getIsWasteMove() != this.isWasteMove) {
 				return false;
 			}
 
-			return 
-				this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier() &&
-				this.getMoveNumber() == comparedMove.getMoveNumber() &&
-				this.getStart().equals(comparedMove.getStart()) &&
-				this.getEnd().equals(comparedMove.getEnd()) &&
-				this.getMoveDirection() == comparedMove.getMoveDirection();
+			return this.getPlayerIdentifier() == comparedMove.getPlayerIdentifier() &&
+					this.getMoveNumber() == comparedMove.getMoveNumber() &&
+					this.getStart().equals(comparedMove.getStart()) &&
+					this.getEnd().equals(comparedMove.getEnd()) &&
+					this.getMoveDirection() == comparedMove.getMoveDirection();
 		}
 
 		@Override
@@ -173,13 +175,12 @@ public class Game {
 			if (this.isWasteMove) {
 				return "waste";
 			}
-			
-			return 
-				this.getMoveDirection().getKey() +
-				((this.moveBonusReceived == null) ? "" : (": " + this.moveBonusReceived.toString()));
+
+			return this.getMoveDirection().getKey() +
+					((this.moveBonusReceived == null) ? "" : (": " + this.moveBonusReceived.toString()));
 		}
 	}
-	
+
 	private ArrayList<GameMove> moveHistory;
 
 	Game(final int gridRows, final int gridColumns) {
@@ -202,17 +203,18 @@ public class Game {
 		this.addEndpoints();
 		this.addPlayers();
 	}
-	
+
 	public void generateMaze() {
 		final MazeGenerator gameMaze = new MazeGenerator(this.gridRows, this.gridColumns);
 		gameMaze.generate();
-		
+
 		MazeGenerator.Cell[][] mazeCellGrid = gameMaze.getMaze();
-		
+
 		for (int rowIndex = 0; rowIndex < this.grid.length; rowIndex++) {
 			for (int columnIndex = 0; columnIndex < this.grid[0].length; columnIndex++) {
-				this.grid[rowIndex][columnIndex] = (
-					(mazeCellGrid[rowIndex][columnIndex] == MazeGenerator.Cell.Block) ? new Wall() : null);
+				this.grid[rowIndex][columnIndex] = ((mazeCellGrid[rowIndex][columnIndex] == MazeGenerator.Cell.Block)
+						? new Wall()
+						: null);
 			}
 		}
 	}
@@ -228,22 +230,23 @@ public class Game {
 
 		this.bonusesWereRemoved = false;
 	}
-	
+
 	public void addEndpoints() {
 		this.player1Endpoint = new Endpoint(PlayerIdentifier.P1, new Cordinate(0, 0));
-		this.player2Endpoint = new Endpoint(PlayerIdentifier.P2, new Cordinate(this.gridColumns - 1, this.gridRows - 1));
+		this.player2Endpoint = new Endpoint(PlayerIdentifier.P2,
+				new Cordinate(this.gridColumns - 1, this.gridRows - 1));
 
 		this.drawEndpoints();
 	}
-	
+
 	public void drawEndpoints() {
 		final Cordinate endpoint1Position = this.player1Endpoint.getPosition();
 		final Cordinate endpoint2Position = this.player2Endpoint.getPosition();
-			
+
 		if (this.at(endpoint1Position) == null) {
 			this.replaceAt(endpoint1Position, this.player1Endpoint);
 		}
-		
+
 		if (this.at(endpoint2Position) == null) {
 			this.replaceAt(endpoint2Position, this.player2Endpoint);
 		}
@@ -284,7 +287,7 @@ public class Game {
 	public Entity at(final Cordinate returnedPosition) {
 		return this.grid[returnedPosition.getY()][returnedPosition.getX()];
 	}
-	
+
 	public void replaceAt(final Cordinate position, final Entity newEntity) {
 		this.grid[position.getY()][position.getX()] = newEntity;
 	}
@@ -292,18 +295,17 @@ public class Game {
 	public boolean inBounds(final Cordinate checkedPosition) {
 		final int xCord = checkedPosition.getX();
 		final int yCord = checkedPosition.getY();
-		
-		return
-			0 <= xCord && xCord < this.gridColumns &&
-			0 <= yCord && yCord < this.gridRows;
-			
+
+		return 0 <= xCord && xCord < this.gridColumns &&
+				0 <= yCord && yCord < this.gridRows;
+
 	}
 
 	public void removeBonuses() {
 		if (this.bonusesWereRemoved) {
 			return;
 		}
-		
+
 		for (Entity[] row : this.grid) {
 			for (int index = 0; index < row.length; index++) {
 				if (row[index] instanceof Bonus) {
@@ -324,29 +326,27 @@ public class Game {
 		if (playerMoving.getPoints() > 0) {
 			checkedViableMoves.add(new GameMove(this.turn, this.moveCount + 1, true)); // Waste move
 		}
-		
+
 		for (final Cordinate.Direction direction : Cordinate.Direction.values()) { // Check all directions
 			final Cordinate newPosition = playerStartingPosition.inDirection(direction, 1);
 
 			if (!this.inBounds(newPosition)) {
 				continue;
 			}
-			
+
 			final Entity atNewPosition = this.at(newPosition);
 			final boolean isBonusAtNewPosition = atNewPosition instanceof Bonus;
 			final boolean isEndpointAtNewPosition = atNewPosition instanceof Endpoint;
-			
+
 			if (atNewPosition == null | isBonusAtNewPosition | isEndpointAtNewPosition) {
 				checkedViableMoves.add(
-					new GameMove(
-						playerMoving.getPlayerIdentifier(),
-						this.moveCount + 1, // Next move
-						playerStartingPosition,
-						newPosition,
-						direction,
-						(isBonusAtNewPosition) ? (Bonus) atNewPosition : null
-					)
-				);
+						new GameMove(
+								playerMoving.getPlayerIdentifier(),
+								this.moveCount + 1, // Next move
+								playerStartingPosition,
+								newPosition,
+								direction,
+								(isBonusAtNewPosition) ? (Bonus) atNewPosition : null));
 			}
 		}
 
@@ -355,7 +355,7 @@ public class Game {
 
 	public ArrayList<Character> viableMoveKeys() {
 		ArrayList<Character> keys = new ArrayList<Character>();
-		
+
 		for (final GameMove viableMove : this.viableMoves()) {
 			keys.add(viableMove.getKey());
 		}
@@ -371,10 +371,10 @@ public class Game {
 				return this.makeMove(maybeMove);
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean makeMove(final GameMove moveMade) {
 		if (moveMade == null) {
 			return false;
@@ -386,27 +386,27 @@ public class Game {
 			this.isRunning = false;
 			this.winner = this.turn.opposite();
 		}
-		
+
 		final boolean isViableMove = allViableMoves.contains(moveMade);
-		
+
 		if (!isViableMove) {
 			return false;
 		}
-		
+
 		final Player playerMoved = (this.turn == PlayerIdentifier.P1) ? player1 : player2;
 
 		if (moveMade.getIsWasteMove()) {
 			this.turn = this.turn.opposite();
 			playerMoved.setPoints(playerMoved.getPoints() - 1);
 			this.moveHistory.add(moveMade);
-			
+
 			return true;
 		}
-		
+
 		final Cordinate startingSquare = moveMade.getStart();
 		final Cordinate endSquare = moveMade.getEnd();
 		final Entity atEndSquare = this.at(endSquare);
-		
+
 		if (atEndSquare instanceof Bonus) {
 			playerMoved.applyBonus((Bonus) atEndSquare);
 		}
@@ -420,7 +420,7 @@ public class Game {
 			this.removeBonuses();
 			player1Finished = true;
 		}
-		
+
 		if (player2.getPosition().equals(player1Endpoint.getPosition())) {
 			this.removeBonuses();
 			player2Finished = true;
@@ -439,11 +439,11 @@ public class Game {
 				this.winner = PlayerIdentifier.P1;
 			}
 		}
-		
+
 		if (this.player2Finished && !this.player1Finished) {
 			this.turn = PlayerIdentifier.P1;
 			this.player1.setPoints(this.player1.getPoints() - 1);
-			
+
 			if (this.player2.getPoints() > this.player1.getPoints()) {
 				this.isRunning = false;
 				this.winner = PlayerIdentifier.P2;
@@ -454,7 +454,7 @@ public class Game {
 			if (this.player1.getPoints() > this.player2.getPoints()) {
 				this.winner = PlayerIdentifier.P1;
 			}
-			
+
 			else if (this.player1.getPoints() < this.player2.getPoints()) {
 				this.winner = PlayerIdentifier.P2;
 			}
@@ -462,26 +462,27 @@ public class Game {
 			else {
 				this.winner = PlayerIdentifier.None;
 			}
-			
+
 			this.isRunning = false;
 		}
 
 		this.drawEndpoints();
 		this.moveHistory.add(moveMade);
 		this.moveCount += 1;
-		
+
 		return true;
 	}
-	
+
 	public String[] renderLines() {
 		final int entitySize = Entity.DIMENSIONS;
 		final String colorReset = Color.CEND.getValue();
-		
+
 		final String blankSpacesChar = ".";
 
 		// *3 accounts for colors and oclor resets
 
-		/** For each entity: 
+		/**
+		 * For each entity:
 		 * Char | Color | Reset | Char | Color | Reset
 		 * Char | Color | Reset | Char | Color | Reset
 		 */
@@ -502,7 +503,7 @@ public class Game {
 				else {
 					final Color[][] colors = renderedEntity.renderColors();
 					final char[][] chars = renderedEntity.renderChars();
-	
+
 					for (int rowOfEntity = 0; rowOfEntity < 2; rowOfEntity++) {
 						if (colors != null) {
 							lines[rowIndex * 2 + rowOfEntity] += colors[rowOfEntity][0].getValue();
@@ -547,7 +548,7 @@ public class Game {
 			}
 
 			renderedString += row;
-			
+
 			for (int index = 0; index < borderWidth; index++) {
 				renderedString += borderChar;
 			}
@@ -567,49 +568,46 @@ public class Game {
 	}
 
 	public String renderScores() {
-		return
-			"Scores: " +
-			Color.CRED.getValue() + "P1 - " + this.player1.getPoints() + " " +
-			Color.CBLUE.getValue() + "P2 - " + this.player2.getPoints() + Color.CEND.getValue();
+		return "Scores: " +
+				Color.CRED.getValue() + "P1 - " + this.player1.getPoints() + " " +
+				Color.CBLUE.getValue() + "P2 - " + this.player2.getPoints() + Color.CEND.getValue();
 	}
 
 	public String renderTurn() {
-		return
-			"Turn: " + ((this.turn == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue() +
-			this.turn + Color.CEND.getValue();
+		return "Turn: " + ((this.turn == PlayerIdentifier.P1) ? Color.CRED : Color.CBLUE).getValue() +
+				this.turn + Color.CEND.getValue();
 	}
-	
+
 	public String renderViableMoves() {
 		return null;
 	}
 
 	public String renderMoveHistory(final int maxHistoryLength) {
 		final int length = Math.min(maxHistoryLength, this.moveHistory.size());
-		
+
 		GameMove[] lastFewMoves = new GameMove[length];
-		
+
 		for (int lastFewMovesIndexer = length - 1; lastFewMovesIndexer >= 0; lastFewMovesIndexer--) {
 			lastFewMoves[lastFewMovesIndexer] = this.moveHistory.get(
-				this.moveHistory.size() - (length - lastFewMovesIndexer));
+					this.moveHistory.size() - (length - lastFewMovesIndexer));
 		}
 
 		String renderString = "Move History:\n";
-		
+
 		for (final GameMove renderedMove : lastFewMoves) {
 			renderString += renderedMove.toStringDescriptive(true);
 			renderString += Color.CEND.getValue();
 			renderString += '\n';
 		}
-		
+
 		return renderString;
 	}
 
 	@Override
 	public String toString() {
-		return
-			this.renderScores() + "\n" +
-			this.renderTurn() + "\n" +
-			this.renderString('*', 1) +
-			this.renderMoveHistory(4);
+		return this.renderScores() + "\n" +
+				this.renderTurn() + "\n" +
+				this.renderString('*', 1) +
+				this.renderMoveHistory(4);
 	}
 }

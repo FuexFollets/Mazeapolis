@@ -5,10 +5,11 @@ public class Cordinate {
 		South('s', "south"),
 		West('a', "west"),
 		None(' ', "none");
+
 		/**
-		 *     N
-		 *  W     E
-		 *     S
+		 * N
+		 * W E
+		 * S
 		 */
 
 		private char key;
@@ -29,25 +30,35 @@ public class Cordinate {
 
 		public Direction rotateLeft() {
 			switch (this) {
-				case North: return West;
-				case West: return South;
-				case South: return East;
-				case East: return North;
+				case North:
+					return West;
+				case West:
+					return South;
+				case South:
+					return East;
+				case East:
+					return North;
 
-				case None: return None;
+				case None:
+					return None;
 			}
-			
+
 			return None;
 		}
 
 		public static Direction fromKey(final char keyFrom) {
 			switch (keyFrom) {
-				case 'w': return North;
-				case 'd': return East;
-				case 's': return South;
-				case 'a': return West;
+				case 'w':
+					return North;
+				case 'd':
+					return East;
+				case 's':
+					return South;
+				case 'a':
+					return West;
 
-				default: return None;
+				default:
+					return None;
 			}
 		}
 
@@ -63,7 +74,7 @@ public class Cordinate {
 			return this == North || this == South;
 		}
 	};
-	
+
 	private int x;
 	private int y;
 
@@ -95,14 +106,14 @@ public class Cordinate {
 
 	public boolean inBounds(final int rows, final int columns) {
 		return (this.getX() < columns && this.getX() >= 0) &&
-			(this.getY() < rows && this.getY() >= 0);
+				(this.getY() < rows && this.getY() >= 0);
 	}
 
 	public int distanceFrom(final Cordinate otherCordinate) { // Returns -1 if they are not on the same row or column
 		if (this.getX() == otherCordinate.getX()) {
 			return Math.abs(this.getY() - otherCordinate.getY());
 		}
-		
+
 		if (this.getY() == otherCordinate.getY()) {
 			return Math.abs(this.getX() - otherCordinate.getX());
 		}
@@ -116,22 +127,35 @@ public class Cordinate {
 			return Direction.None;
 		}
 
-		if (this.getX() == otherCordinate.getX() && this.getY() > otherCordinate.getY()) { return Direction.North; }
-		if (this.getX() == otherCordinate.getX() && this.getY() < otherCordinate.getY()) { return Direction.South; }
-		
-		if (this.getY() == otherCordinate.getY() && this.getX() < otherCordinate.getX()) { return Direction.East; }
-		if (this.getY() == otherCordinate.getY() && this.getX() > otherCordinate.getX()) { return Direction.West; }
+		if (this.getX() == otherCordinate.getX() && this.getY() > otherCordinate.getY()) {
+			return Direction.North;
+		}
+		if (this.getX() == otherCordinate.getX() && this.getY() < otherCordinate.getY()) {
+			return Direction.South;
+		}
+
+		if (this.getY() == otherCordinate.getY() && this.getX() < otherCordinate.getX()) {
+			return Direction.East;
+		}
+		if (this.getY() == otherCordinate.getY() && this.getX() > otherCordinate.getX()) {
+			return Direction.West;
+		}
 
 		return Direction.None;
 	}
 
 	public Cordinate inDirection(final Direction direction, int distance) {
 		switch (direction) {
-			case North: return new Cordinate(this.getX(), this.getY() - distance);
-			case South: return new Cordinate(this.getX(), this.getY() + distance);
-			case East: return new Cordinate(this.getX() + distance, this.getY());
-			case West: return new Cordinate(this.getX() - distance, this.getY());
-			case None: return this;
+			case North:
+				return new Cordinate(this.getX(), this.getY() - distance);
+			case South:
+				return new Cordinate(this.getX(), this.getY() + distance);
+			case East:
+				return new Cordinate(this.getX() + distance, this.getY());
+			case West:
+				return new Cordinate(this.getX() - distance, this.getY());
+			case None:
+				return this;
 		}
 
 		return this;
@@ -161,9 +185,9 @@ public class Cordinate {
 		}
 
 		final Cordinate otherCordinate = (Cordinate) otherPossibleCordinate;
-		
+
 		return otherCordinate.getX() == this.getX() &&
-			otherCordinate.getY() == this.getY();
+				otherCordinate.getY() == this.getY();
 	}
 
 	@Override

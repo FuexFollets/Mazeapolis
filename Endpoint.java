@@ -14,19 +14,19 @@ public class Endpoint extends Entity {
 	public Color[][] renderColors() {
 		return null;
 	}
-	
+
 	public char[][] renderChars() {
 		if (player == Game.PlayerIdentifier.P1) {
-			return new char[][]{
-				{'1', '1'},
-				{'1', '1'}
+			return new char[][] {
+					{ '1', '1' },
+					{ '1', '1' }
 			};
 		}
 
 		if (player == Game.PlayerIdentifier.P2) {
-			return new char[][]{
-				{'2', '2'},
-				{'2', '2'}
+			return new char[][] {
+					{ '2', '2' },
+					{ '2', '2' }
 			};
 		}
 

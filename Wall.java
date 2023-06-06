@@ -8,9 +8,9 @@ public class Wall extends Entity {
 	}
 
 	public char[][] renderChars() {
-		return new char[][]{
-			{'#', '#'},
-			{'#', '#'},
+		return new char[][] {
+				{ '#', '#' },
+				{ '#', '#' },
 		};
 	}
 }
