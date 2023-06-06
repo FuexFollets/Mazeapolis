@@ -71,17 +71,19 @@ public class Player extends Entity {
 	}
 
 	public char[][] renderChars() {
+		final char blankSpaceChar = Game.BLANK_SPACE_CHAR.charAt(0);
+
 		if (this.player == Game.PlayerIdentifier.P1) {
 			return new char[][] {
 					{ 'P', '1' },
-					{ '.', '.' }
+					{ blankSpaceChar, blankSpaceChar }
 			};
 		}
 
 		if (this.player == Game.PlayerIdentifier.P2) {
 			return new char[][] {
 					{ 'P', '2' },
-					{ '.', '.' }
+					{ blankSpaceChar, blankSpaceChar }
 			};
 		}
 
