@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Bonus extends Entity {
 	enum BonusType {
 		Add(1, "+"),
@@ -22,9 +24,9 @@ public class Bonus extends Entity {
 		}
 	};
 
-	final BonusType bonusType;
-	final boolean isMysteryBonus;
-	final int bonusValue;
+	private final BonusType bonusType;
+	private final boolean isMysteryBonus;
+	private final int bonusValue;
 
 	public Bonus() {
 		super();
