@@ -104,10 +104,11 @@ public final class GameLoop {
 	}
 
 	public Cordinate promptSize() {
-		final String promptDialog = "Enter an integer board size >10 for the rows and columns separated by a space (Note: board sizes too large may not render properly)\n> ";
 		final String errorInvalidType = "Error: %s is an invalid integer\n";
 		final String errorSmallBoard = "Error: %d is too small of a board size\n";
 		final String warningLargeBoard = "Warning: a board size of %d might not render properly\n";
+		final int minBoardSize = 6;
+		final String promptDialog = String.format("Enter an integer board size >%d for the rows and columns separated by a space (Note: board sizes too large may not render properly)\n> ", minBoardSize);
 
 		Scanner stdin = new Scanner(System.in);
 
@@ -153,7 +154,7 @@ public final class GameLoop {
 				continue;
 			}
 
-			if (integerInput1 <= 10 || integerInput2 <= 10) {
+			if (integerInput1 <= minBoardSize || integerInput2 <= minBoardSize) {
 				System.out.printf("A board size of %d by %d is too small. Both dimensions must be >10.\n> ",
 						integerInput1, integerInput2);
 				continue;
