@@ -199,7 +199,7 @@ public final class GameLoop {
 
 		final Cordinate gameSize = this.promptSize();
 
-		this.runningGame = new Game(gameSize.getY() - 10, gameSize.getX() - 10);
+		this.runningGame = new Game(gameSize.getY(), gameSize.getX());
 		this.runningGame.initialize();
 
 		clearScreen();
